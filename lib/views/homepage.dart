@@ -26,15 +26,13 @@ class _HomepageState extends State<Homepage> {
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         elevation: 0,
         backgroundColor: Colors.transparent,
-        title: Container(
-          child: Text(
-            'BMI Calculator',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline2!.apply(
-                  fontSizeDelta: userTextSize,
-                  fontWeightDelta: -1,
-                ),
-          ),
+        title: Text(
+          'BMI Calculator',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headline2!.apply(
+                fontSizeDelta: userTextSize,
+                fontWeightDelta: -1,
+              ),
         ),
         foregroundColor: Colors.blue,
         centerTitle: true,
@@ -295,7 +293,7 @@ class _HomepageState extends State<Homepage> {
       } else if (bmiPercentage >= 5 && bmiPercentage <= 85) {
         category = 'Healthy weight';
         colorCategory = Colors.green[800];
-        imagePath = isMale ? 'assets/male-nice.jpeg' : 'assets/male-nice.jpeg';
+        imagePath = isMale ? 'assets/male-nice.jpeg' : 'assets/female-nice.jpeg';
       } else if (bmiPercentage >= 85 && bmiPercentage <= 95) {
         category = 'At risk of overweight';
         colorCategory = Colors.yellow[700];
@@ -316,7 +314,7 @@ class _HomepageState extends State<Homepage> {
       } else if (bmiPercentage >= 18.5 && bmiPercentage <= 25) {
         category = 'Normal';
         colorCategory = Colors.green[800];
-        imagePath = isMale ? 'assets/male-nice.jpeg' : 'assets/male-nice.jpeg';
+        imagePath = isMale ? 'assets/male-nice.jpeg' : 'assets/female-nice.jpeg';
       } else if (bmiPercentage >= 25 && bmiPercentage <= 30) {
         category = 'Overweight';
         colorCategory = Colors.yellow[700];
@@ -351,6 +349,9 @@ class _HomepageState extends State<Homepage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
+                    SizedBox(
+                      height: userScreenPadding / 2,
+                    ),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: userScreenPadding),
                       height: userScreenWidth * 0.55,
@@ -358,9 +359,13 @@ class _HomepageState extends State<Homepage> {
                         image: AssetImage(imagePath),
                       ),
                     ),
+                    Text(
+                      bmiPercentage.toStringAsFixed(2),
+                      style: TextStyle(color: Color(0xff163567)),
+                    ),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: userScreenPadding, vertical: userScreenPadding / 2),
-                      margin: EdgeInsets.symmetric(vertical: userScreenPadding),
+                      margin: EdgeInsets.symmetric(vertical: userScreenPadding / 2),
                       decoration: BoxDecoration(
                         color: colorCategory,
                         borderRadius: BorderRadius.all(
@@ -371,6 +376,9 @@ class _HomepageState extends State<Homepage> {
                         category,
                         style: TextStyle(color: Colors.white),
                       ),
+                    ),
+                    SizedBox(
+                      height: userScreenPadding / 2,
                     ),
                   ],
                 ),
