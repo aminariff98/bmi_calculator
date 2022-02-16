@@ -121,7 +121,7 @@ class _GenderSelectionState extends State<GenderSelection> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                       ),
                       onPressed: () {
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Homepage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const Homepage()));
                       },
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: userScreenPadding, vertical: userScreenPadding / 1.5),

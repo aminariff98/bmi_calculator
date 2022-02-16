@@ -16,6 +16,7 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   String userHeight = '', userWeight = '', userAge = '';
   String userHeightError = '', userWeightError = '', userAgeError = '';
+  TextEditingController? _ageController, _heightController, _weightController;
   late double bmiPercentage;
 
   @override
@@ -26,7 +27,6 @@ class _HomepageState extends State<Homepage> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         title: Container(
-          alignment: Alignment.center,
           child: Text(
             'BMI Calculator',
             textAlign: TextAlign.center,
@@ -36,6 +36,7 @@ class _HomepageState extends State<Homepage> {
                 ),
           ),
         ),
+        foregroundColor: Colors.blue,
         centerTitle: true,
       ),
       body: Padding(
@@ -53,44 +54,87 @@ class _HomepageState extends State<Homepage> {
               ),
               SizedBox(height: userScreenPadding / 2),
               fieldTitle('Age'),
-              _textInputForm('userAge', true, false, null, userAgeError, 'number', 5, 1, ''),
+              _textInputForm('userAge', true, false, _ageController, '2 - 120', userAgeError, 'number', 3, 1, ''),
               fieldTitle('Height'),
-              _textInputForm('userHeight', true, false, null, userHeightError, 'number', 255, 1, 'cm'),
+              _textInputForm('userHeight', true, false, _heightController, '', userHeightError, 'number', 3, 1, 'cm'),
               fieldTitle('Weight'),
-              _textInputForm('userWeight', true, false, null, userWeightError, 'number', 255, 1, 'kg'),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: userScreenPadding * 3.5, vertical: userScreenPadding * 2),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
-                    padding: EdgeInsets.zero,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                  ),
-                  onPressed: () {
-                    calculateBmi();
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: userScreenPadding, vertical: userScreenPadding / 1.5),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          'Calculate',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              _textInputForm('userWeight', true, false, _weightController, '', userWeightError, 'number', 3, 1, 'kg'),
+              Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: userScreenPadding * 3, vertical: userScreenPadding * 2),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blue,
+                        padding: EdgeInsets.zero,
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      ),
+                      onPressed: () {
+                        onButtonPressed();
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: userScreenPadding * 3, vertical: userScreenPadding / 1.5),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text(
+                              'Calculate',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                  Positioned(
+                    right: userScreenPadding,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _ageController = TextEditingController(text: '');
+                          _heightController = TextEditingController(text: '');
+                          _weightController = TextEditingController(text: '');
+                          userAgeError = '';
+                          userHeightError = '';
+                          userWeightError = '';
+                        });
+                      },
+                      child: Icon(
+                        Icons.refresh,
+                        size: 27,
+                        color: Color(0xff163567),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void onButtonPressed() {
+    if (userAge.isNotEmpty && userHeight.isNotEmpty && userWeight.isNotEmpty) {
+      calculateBmi();
+    } else {
+      setState(() {
+        if (userAge.isEmpty) {
+          userAgeError = 'Age is required';
+        }
+        if (userHeight.isEmpty) {
+          userHeightError = 'Height is required';
+        }
+        if (userWeight.isEmpty) {
+          userWeightError = 'Weight is required';
+        }
+      });
+    }
   }
 
   Widget fieldTitle(text) {
@@ -109,7 +153,8 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  Widget _textInputForm(String attribute, bool isEditable, bool isDropDown, TextEditingController? controller, String error, String type, int lengthLimit, int linesNumber, String suffixUnit) {
+  Widget _textInputForm(
+      String attribute, bool isEditable, bool isDropDown, TextEditingController? controller, String hintText, String error, String type, int lengthLimit, int linesNumber, String suffixUnit) {
     return Column(
       children: [
         Row(
@@ -129,7 +174,7 @@ class _HomepageState extends State<Homepage> {
                   fillColor: isDropDown
                       ? const Color(0xFFEAF2FA)
                       : isEditable
-                          ? const Color(0xFFEAF2FA)
+                          ? const Color(0xFFdce8f2)
                           : const Color(0xFFF5F6F7),
                   filled: true,
                   suffixIcon: (isDropDown)
@@ -150,6 +195,7 @@ class _HomepageState extends State<Homepage> {
                   ),
                   errorBorder: InputBorder.none,
                   disabledBorder: InputBorder.none,
+                  hintText: hintText,
                   hintStyle: Theme.of(context).textTheme.bodyText2!.apply(color: Color(0xFF9D9E9E), fontSizeDelta: userTextSize),
                 ),
                 controller: controller,
